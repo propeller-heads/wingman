@@ -4,9 +4,13 @@
 
 ## Setup
 ```
-brew update
 brew install yarn
 
-yarn add wagmi viem
+yarn
+```
 
+## Run tests
+
+```
+yarn test
 ```
