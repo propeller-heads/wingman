@@ -2,5 +2,8 @@
   "dependencies": {
     "viem": "^0.3.22",
     "wagmi": "^1.0.2"
+  },
+  "devDependencies": {
+    "@wagmi/cli": "^1.0.1"
   }
 }
