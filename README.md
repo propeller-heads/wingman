@@ -5,6 +5,7 @@
 ## Setup
 ```
 brew install yarn
+yarn add @1inch/fusion-sdk
 
 yarn
 ```
