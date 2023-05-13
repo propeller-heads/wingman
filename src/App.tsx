@@ -53,6 +53,21 @@ const App: React.FC = () => {
         loadWeb3Provider();
     }, []);
 
+
+    const encrypt = async (nucypher: any) => {
+        const cohort = await nucypher.Cohort.create({
+            threshold: 2,
+            shares: 3,
+            porterUri: 'https://porter-tapir.nucypher.community'
+        })
+        const condition = createPriceCondition(nucypher, "0x0715A7794a1dc8e42615F059dD6e406A6594651A", 179922000000, "<=", 80001);
+        console.log(condition);
+        const conditionSet = new nucypher.ConditionSet([condition]);
+        const strategy = nucypher.Strategy.create(cohort, conditionSet);
+        const deployedStrategy = await strategy.deploy("test", provider);
+        console.log(deployedStrategy);
+    }
+
     const handleFormSubmit: MainFormProps['onSubmit'] = (data) => {
         // Handle form submission here
         console.log(data);
@@ -67,8 +82,7 @@ const App: React.FC = () => {
         )
         console.log(order);
         console.log(nucypher);
-        const condition = createPriceCondition(nucypher, "0x0715A7794a1dc8e42615F059dD6e406A6594651A", 179922000000, "<=", 80001);
-        console.log(condition);
+        encrypt(nucypher);
     };
 
     return (
