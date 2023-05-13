@@ -1,13 +1,12 @@
 import { FusionSDK, NetworkEnum, getLimitOrderV3Domain } from '@1inch/fusion-sdk'
 import {Web3ProviderConnector} from './provider'
 
-export async function buildFusionOrder(
+export async function getFusionQuote(
     sellToken: string,
     buyToken: string,
     sellAmount: string,
-    wallet: string,
     provider: Web3ProviderConnector,
-): Promise<any>{
+): Promise<any> {
     const blockchainProvider = new Web3ProviderConnector(provider)
     const sdk = new FusionSDK({
         url: 'https://fusion.1inch.io',
@@ -19,25 +18,12 @@ export async function buildFusionOrder(
         fromTokenAddress: sellToken,
         toTokenAddress: buyToken,
         amount: sellAmount,
-        walletAddress:wallet
     };
+    const quote = await sdk.getQuote(params);
 
-    const {order, quoteId} = await sdk.createOrder(params);
-
-    const orderStruct = order.build();
-  
-    const { chainId } = await blockchainProvider.getNetwork();
-    const domain = getLimitOrderV3Domain(chainId);
-    const signature = await blockchainProvider.signTypedData(
-        orderStruct.maker,
-        order.getTypedData(domain)
-    )
-
-    return {
-            order: order,
-            signature: signature,
-            quoteId: quoteId
-        }
+    return quote;
 }
+
+  export {};
 
 
