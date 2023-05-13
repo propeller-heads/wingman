@@ -81,7 +81,7 @@ const App: React.FC = () => {
         const order = await buildFusionOrder(
             data["sellToken"],
             data["buyToken"],
-            data["amount"],
+            data["sellAmount"],
             provider.provider.selectedAddress,
             provider,
         )
