@@ -76,12 +76,14 @@ const App: React.FC = () => {
     const handleFormSubmit: MainFormProps['onSubmit'] = async (data) => {
         // Handle form submission here
         console.log(data);
-        const order = buildFusionOrder(
+        const limit: number = +data["limit"];
+        const amount: number = +data["amount"];
+        const order = await buildFusionOrder(
             data["sellToken"],
             data["buyToken"],
             data["sellAmount"],
-            data["buyAmount"],
-            provider.provider.SelectedAddress,
+            provider.provider.selectedAddress,
+            provider,
         )
         console.log(order);
         console.log(nucypher);
