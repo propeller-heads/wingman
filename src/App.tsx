@@ -6,13 +6,16 @@ import styles from './App.module.css';
 import { createPriceCondition } from './privacy/threshold';
 import { ethers } from 'ethers';
 
+import dotenv from 'dotenv';
+const ipfsClient = require('ipfs-http-client');
+
+dotenv.config();
 
 interface MainFormProps {
     onSubmit: (data: any) => void;
 }
 
-type NucypherType = {
-};
+type NucypherType = {};
 
 declare global {
     interface Window {
@@ -25,6 +28,22 @@ const App: React.FC = () => {
 
     const [nucypher, setNucypher] = React.useState<NucypherType | undefined>(undefined);
     const [provider, setProvider] = React.useState<any | undefined>(undefined);
+    const [IPFSClient, setIPFSClient] = React.useState<any | undefined>(undefined);
+
+    const getIPFSClient = () => {
+        const INFURA_PROJECT_ID = process.env.REACT_APP_INFURA_PROJECT_ID;
+        const INFURA_SECRET = process.env.REACT_APP_INFURA_SECRET;
+
+        const client = ipfsClient.create({
+            host: 'ipfs.infura.io',
+            port: 5001,
+            protocol: 'https',
+            headers: {
+                authorization: `Basic ${Buffer.from(`${INFURA_PROJECT_ID}:${INFURA_SECRET}`).toString('base64')}`,
+            },
+        });
+        setIPFSClient(client);
+    }
 
     const loadNucypher = async () => {
         const nucypherModule = await import('@nucypher/nucypher-ts');
@@ -50,14 +69,25 @@ const App: React.FC = () => {
     React.useEffect(() => {
         loadNucypher();
         loadWeb3Provider();
+        getIPFSClient();
     }, []);
 
-    const handleFormSubmit: MainFormProps['onSubmit'] = (data) => {
+    const handleFormSubmit: MainFormProps['onSubmit'] = async (data) => {
         // Handle form submission here
         console.log(data);
         console.log(nucypher);
         const condition = createPriceCondition(nucypher, "0x0715A7794a1dc8e42615F059dD6e406A6594651A", 179922000000, "<=", 80001);
         console.log(condition);
+        try {
+            // Add JSON data to IPFS
+            const jsonData = JSON.stringify(data);
+            const result = await IPFSClient.add(jsonData);
+
+            // Log the resulting IPFS hash
+            console.log('IPFS hash:', result.path);
+        } catch (error) {
+            console.error('Error uploading data to IPFS:', error);
+        }
     };
 
     return (
