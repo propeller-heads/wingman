@@ -77,11 +77,11 @@ const App: React.FC = () => {
         // Handle form submission here
         console.log(data);
         const limit: number = +data["limit"];
-        const amount: number = +data["amount"];
+        const amount: number = +data["sellAmount"];
         const order = buildFusionOrder(
             data["sellToken"],
             data["buyToken"],
-            data["amount"],
+            data["sellAmount"],
             (limit * amount).toString(),
             "fake_wallet",
         )
