@@ -4,6 +4,8 @@ import MainForm from './components/stopLoss';
 import { Box } from '@chakra-ui/react';
 import styles from './App.module.css';
 import { createPriceCondition } from './privacy/threshold';
+import { ethers } from 'ethers';
+
 
 interface MainFormProps {
     onSubmit: (data: any) => void;
@@ -12,18 +14,42 @@ interface MainFormProps {
 type NucypherType = {
 };
 
+declare global {
+    interface Window {
+        ethereum: any;
+    }
+}
+
+
 const App: React.FC = () => {
 
     const [nucypher, setNucypher] = React.useState<NucypherType | undefined>(undefined);
+    const [provider, setProvider] = React.useState<any | undefined>(undefined);
 
     const loadNucypher = async () => {
         const nucypherModule = await import('@nucypher/nucypher-ts');
         setNucypher(nucypherModule);
         console.log("nucypher loaded");
+        loadWeb3Provider();
+    };
+
+    const loadWeb3Provider = async () => {
+        if (!window.ethereum) {
+            console.error('You need to connect to the MetaMask extension');
+        }
+        const provider = new ethers.providers.Web3Provider(window.ethereum, 'any');
+        const { chainId } = await provider.getNetwork();
+        if (![137, 80001].includes(chainId)) {
+            console.error('You need to connect to the Mumbai or Polygon network');
+        }
+
+        await provider.send('eth_requestAccounts', []);
+        setProvider(provider);
     };
 
     React.useEffect(() => {
         loadNucypher();
+        loadWeb3Provider();
     }, []);
 
     const handleFormSubmit: MainFormProps['onSubmit'] = (data) => {
