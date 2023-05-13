@@ -1,0 +1,16 @@
+.backgroundImage {
+    background-image: url('./assets/cz_4k_purple_and_yellow_airplane_cockpit_illustration_0e5636ae-400e-4e0f-9cdd-a39529adadad.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.appName {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    /* Adjust according to your preference */
+    font-size: 24px;
+    /* Adjust according to your preference */
+    color: rgb(255, 234, 0);
+    text-transform: lowercase;
+}
