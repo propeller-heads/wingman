@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 
-const INFURA_POLYGON_MUMBAI_ENDPOINT = 'https://polygon-mumbai.infura.io/v3/4458cf4d1689497b9a38b1d6bbf05e78';
+const INFURA_POLYGON_MUMBAI_ENDPOINT = 'https://polygon-rpc.com/';
 const provider = new ethers.providers.JsonRpcProvider(INFURA_POLYGON_MUMBAI_ENDPOINT);
 
 

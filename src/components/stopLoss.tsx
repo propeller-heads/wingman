@@ -11,7 +11,7 @@ const MainForm: React.FC<MainFormProps> = ({ onSubmit, isConnected }) => {
     const [sellToken, setSellToken] = React.useState('');
     const [buyToken, setBuyToken] = React.useState('');
     const [sellAmount, setLimit] = React.useState('');
-    const [buyAmount, setAmount] = React.useState('');
+    const [buyAmount, setBuyAmount] = React.useState('');
     const [isFormValid, setIsFormValid] = React.useState(false);
     const [buttonText, setText] = React.useState('Create Order');
 
@@ -97,7 +97,7 @@ const MainForm: React.FC<MainFormProps> = ({ onSubmit, isConnected }) => {
                     focusBorderColor={theme.colors.purple_dark}
                     value={sellAmount}
                     onChange={(e) => setLimit(e.target.value)}
-                    placeholder="Enter limit value"
+                    placeholder="Enter the sell amount"
                 />
             </FormControl>
 
@@ -110,8 +110,8 @@ const MainForm: React.FC<MainFormProps> = ({ onSubmit, isConnected }) => {
                     textColor={buyAmount ? theme.colors.purple_dark : 'gray.400'}
                     focusBorderColor={theme.colors.purple_dark}
                     value={buyAmount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="Enter amount"
+                    onChange={(e) => setBuyAmount(e.target.value)}
+                    placeholder="Enter the buy amount"
                 />
             </FormControl>
 

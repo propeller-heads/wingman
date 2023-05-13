@@ -79,8 +79,6 @@ const App: React.FC = () => {
         console.log(data);
         const sellAmount = +data["sellAmount"] * 10 ** await getTokenDecimals(data["sellToken"]);
         const buyAmount = +data["buyAmount"] * 10 ** await getTokenDecimals(data["buyToken"]);
-        console.log(sellAmount);
-        console.log(buyAmount);
         const order = await buildFusionOrder(
             data["sellToken"],
             data["buyToken"],
