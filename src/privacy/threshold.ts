@@ -1,7 +1,5 @@
 export const threshold: string = "Threshold Order Privacy"
 
-import { Cohort, Conditions, Condition } from '@nucypher/nucypher-ts';
-
 const config = {
     threshold: 2,
     shares: 3,
@@ -10,11 +8,12 @@ const config = {
 
 
 export function createPriceCondition(
+    nucypher: any,
     oracleAddress: string,
     triggerPrice: number, // TODO: Update this type once we have ethereum libs
     comparator: string,
     chainId: number = 1,
-): Condition {
+): any {
     const conditionConfig = {
         contractAddress: oracleAddress,
         method: "latestAnswer",
@@ -38,11 +37,11 @@ export function createPriceCondition(
             value: triggerPrice
         }
     };
-    return new Conditions.Condition(conditionConfig);
+    return new nucypher.Conditions.Condition(conditionConfig);
 }
 
 
-export async function encrypt(): Promise<void> {
-    const cohort = await Cohort.create(config);
+export async function encrypt(nucypher: any): Promise<void> {
+    const cohort = await nucypher.Cohort.create(config);
     console.log("Hello from the threshold privacy module!");
 }

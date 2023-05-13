@@ -3,14 +3,31 @@ import React from 'react';
 
 interface MainFormProps {
     onSubmit: (data: any) => void;
+    isConnected: boolean;
 }
 
-const MainForm: React.FC<MainFormProps> = ({ onSubmit }) => {
+const MainForm: React.FC<MainFormProps> = ({ onSubmit, isConnected }) => {
     const [sellToken, setSellToken] = React.useState('');
     const [buyToken, setBuyToken] = React.useState('');
     const [stopAt, setStopAt] = React.useState('');
     const [limit, setLimit] = React.useState('');
     const [amount, setAmount] = React.useState('');
+    const [isFormValid, setIsFormValid] = React.useState(false);
+
+    // Check if all form fields are filled
+    const checkFormValidity = () => {
+        if (sellToken && buyToken && stopAt && limit && amount && isConnected) {
+            setIsFormValid(true);
+        } else {
+            setIsFormValid(false);
+        }
+    };
+
+    // Call checkFormValidity whenever any form field changes
+    React.useEffect(() => {
+        checkFormValidity();
+    }, [sellToken, buyToken, stopAt, limit, amount]);
+
 
     const handleSubmit = () => {
         onSubmit({
@@ -84,8 +101,8 @@ const MainForm: React.FC<MainFormProps> = ({ onSubmit }) => {
             </FormControl>
 
             <Flex justifyContent="flex-end">
-                <Button colorScheme="purple" onClick={handleSubmit}>
-                    Create Stop-loss
+                <Button colorScheme="purple" color={"white"} backgroundColor={isFormValid ? 'rgba(106,39,115, 255)' : 'gray'} onClick={handleSubmit} disabled={!isFormValid}>
+                    {isFormValid ? 'Create Stop-loss' : 'Please connect your wallet and fill the form'}
                 </Button>
             </Flex>
         </Box>
