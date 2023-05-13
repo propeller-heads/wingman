@@ -11,8 +11,9 @@ const MainForm: React.FC<MainFormProps> = ({ onSubmit, isConnected }) => {
     const [sellToken, setSellToken] = React.useState('');
     const [buyToken, setBuyToken] = React.useState('');
     const [sellAmount, setLimit] = React.useState('');
-    const [buyAmount, setAmount] = React.useState('');
+    const [buyAmount, setBuyAmount] = React.useState('');
     const [isFormValid, setIsFormValid] = React.useState(false);
+    const [buttonText, setText] = React.useState('Create Order');
 
     // Check if all form fields are filled
     const checkFormValidity = () => {
@@ -36,10 +37,19 @@ const MainForm: React.FC<MainFormProps> = ({ onSubmit, isConnected }) => {
             sellAmount: sellAmount,
             buyAmount: buyAmount,
         });
+        setText('Order Created!');
     };
 
     return (
-        <Box width="400px" p={4} borderWidth={2} borderRadius={8} boxShadow="lg" borderColor="purple" backgroundColor="rgba(255, 255, 255, 0.85)" // Set the background color to white with 80% opacity
+        <Box
+            rounded={"lg"}
+            width="400px"
+            p={4}
+            borderWidth={2}
+            borderRadius={8}
+            boxShadow={"lg"}
+            borderColor="purple"
+            backgroundColor="rgba(255, 255, 255, 0.85)"
         >
             <FormControl id="sellToken" mb={4}>
                 <FormLabel textColor={theme.colors.purple_dark} fontFamily={theme.font}>Sell Token</FormLabel>
@@ -53,9 +63,9 @@ const MainForm: React.FC<MainFormProps> = ({ onSubmit, isConnected }) => {
                     fontFamily={theme.font}
                 >
                     {/* Add your token options here */}
-                    <option value="0x0000000000000000000000000000000000001010">MATIC</option>
                     <option value="0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174">USDC</option>
                     <option value="0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063">DAI</option>
+                    <option value="0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619">WETH</option>
                 </Select>
             </FormControl>
 
@@ -71,9 +81,9 @@ const MainForm: React.FC<MainFormProps> = ({ onSubmit, isConnected }) => {
                     onChange={(e) => setBuyToken(e.target.value)}
                 >
                     {/* Add your token options here */}
-                    <option value="0x0000000000000000000000000000000000001010">MATIC</option>
                     <option value="0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174">USDC</option>
                     <option value="0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063">DAI</option>
+                    <option value="0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619">WETH</option>
                 </Select>
             </FormControl>
 
@@ -87,7 +97,7 @@ const MainForm: React.FC<MainFormProps> = ({ onSubmit, isConnected }) => {
                     focusBorderColor={theme.colors.purple_dark}
                     value={sellAmount}
                     onChange={(e) => setLimit(e.target.value)}
-                    placeholder="Enter limit value"
+                    placeholder="Enter the sell amount"
                 />
             </FormControl>
 
@@ -100,8 +110,8 @@ const MainForm: React.FC<MainFormProps> = ({ onSubmit, isConnected }) => {
                     textColor={buyAmount ? theme.colors.purple_dark : 'gray.400'}
                     focusBorderColor={theme.colors.purple_dark}
                     value={buyAmount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="Enter amount"
+                    onChange={(e) => setBuyAmount(e.target.value)}
+                    placeholder="Enter the buy amount"
                 />
             </FormControl>
 
@@ -113,7 +123,7 @@ const MainForm: React.FC<MainFormProps> = ({ onSubmit, isConnected }) => {
                     backgroundColor={isFormValid ? theme.colors.purple_dark : 'gray'}
                     onClick={handleSubmit}
                     disabled={!isFormValid}>
-                    {isFormValid ? 'Create Stop-loss' : 'Connect your wallet and fill the form'}
+                    {isFormValid ? buttonText : 'Connect your wallet and fill the form'}
                 </Button>
             </Flex>
         </Box >
