@@ -9,9 +9,8 @@ export function buildFusionOrder(
   wallet: string,
   privateKey: string
 ): LimitOrderV3Struct {
-
     const salt = new AuctionSalt({
-        duration: 180,
+        duration: 604800, // one week
         auctionStartTime: Math.floor(Date.now() / 1000),
         initialRateBump: 50000,
         bankFee: '0'
@@ -60,3 +59,5 @@ export function buildFusionOrder(
             }
     */
 }
+
+

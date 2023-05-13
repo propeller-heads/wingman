@@ -1,4 +1,5 @@
 import { buildFusionOrder } from './fusion_order';
+import {AuctionSalt} from '@1inch/fusion-sdk'
 
 describe('buildFusionOrder', () => {
   it('should return a valid LimitOrderV3Struct object', () => {
@@ -17,6 +18,9 @@ describe('buildFusionOrder', () => {
     expect(result.makingAmount).toEqual(sellAmount);
     expect(result.takerAsset).toEqual(buyToken);
     expect(result.takingAmount).toEqual(minBuyAmount);
+
+    const salt = AuctionSalt.decode(result.salt)
+    expect(salt.duration).toEqual(604800)
 
   });
 });
