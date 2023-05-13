@@ -50,9 +50,9 @@ const MainForm: React.FC<MainFormProps> = ({ onSubmit, isConnected }) => {
                     onChange={(e) => setSellToken(e.target.value)}
                 >
                     {/* Add your token options here */}
-                    <option value="0x0000000000000000000000000000000000001010">MATIC</option>
                     <option value="0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174">USDC</option>
                     <option value="0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063">DAI</option>
+                    <option value="0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619">WETH</option>
                 </Select>
             </FormControl>
 
@@ -64,9 +64,9 @@ const MainForm: React.FC<MainFormProps> = ({ onSubmit, isConnected }) => {
                     onChange={(e) => setBuyToken(e.target.value)}
                 >
                     {/* Add your token options here */}
-                    <option value="0x0000000000000000000000000000000000001010">MATIC</option>
                     <option value="0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174">USDC</option>
                     <option value="0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063">DAI</option>
+                    <option value="0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619">WETH</option>
                 </Select>
             </FormControl>
 

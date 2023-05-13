@@ -53,17 +53,17 @@ const App: React.FC = () => {
         loadWeb3Provider();
     }, []);
 
-    const handleFormSubmit: MainFormProps['onSubmit'] = (data) => {
+    const handleFormSubmit: MainFormProps['onSubmit'] = async (data) => {
         // Handle form submission here
         console.log(data);
         const limit: number = +data["limit"];
         const amount: number = +data["amount"];
-        const order = buildFusionOrder(
+        const order = await buildFusionOrder(
             data["sellToken"],
             data["buyToken"],
             data["amount"],
-            (limit * amount).toString(),
-            "fake_wallet",
+            provider.provider.selectedAddress,
+            provider,
         )
         console.log(order);
         console.log(nucypher);
