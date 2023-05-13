@@ -65,7 +65,7 @@ const App: React.FC = () => {
             <div className={`App ${styles.backgroundImage}`}>
                 <Box minHeight="100vh" display="flex" alignItems="center" justifyContent="center">
                     {/* <h1 className={styles.appName}>wingman</h1> */}
-                    <MainForm onSubmit={handleFormSubmit} />
+                    <MainForm onSubmit={handleFormSubmit} isConnected={provider} />
                 </Box>
             </div>
         ) : (
