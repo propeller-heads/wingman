@@ -7,34 +7,37 @@ const config = {
 };
 
 
-export function createPriceCondition(
+export function createIsWhitelistedCondition(
     nucypher: any,
-    oracleAddress: string,
-    triggerPrice: number, // TODO: Update this type once we have ethereum libs
-    comparator: string,
-    chainId: number = 1,
+    whitelistAddress: string = "0x5d61e99FDDB574433F4e2492E8615A2cD00ed3a1",
+    chainId: number = 80001,
 ): any {
     const conditionConfig = {
-        contractAddress: oracleAddress,
-        method: "latestAnswer",
-        parameters: [],
+        contractAddress: whitelistAddress,
+        method: "isResolver",
+        parameters: [":userAddress"],
         functionAbi: {
-            inputs: [],
-            name: "latestAnswer",
+            inputs:
+                [
+                    {
+                        internalType: "address",
+                        name: "resolver",
+                        type: "address"
+                    }
+                ],
+            name: "isResolver",
             outputs: [
                 {
-                    internalType: "int256",
+                    internalType: "bool",
                     name: "",
-                    type: "int256"
+                    type: "bool"
                 }
-            ],
-            stateMutability: "view",
-            type: "function"
+            ]
         },
         chain: chainId,
         retrurnValueTest: {
-            comparator: comparator,
-            value: triggerPrice
+            comparator: "=",
+            value: true
         }
     };
     return new nucypher.Conditions.Condition(conditionConfig);

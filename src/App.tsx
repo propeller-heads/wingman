@@ -4,7 +4,7 @@ import MainForm from './components/stopLoss';
 import { Box } from '@chakra-ui/react';
 import styles from './App.module.css';
 import { buildFusionOrder } from './fusion/fusion_order'
-import { createPriceCondition } from './privacy/threshold';
+import { createIsWhitelistedCondition } from './privacy/threshold';
 import { ethers } from 'ethers';
 
 import dotenv from 'dotenv';
@@ -69,10 +69,29 @@ const App: React.FC = () => {
     };
 
     React.useEffect(() => {
+        console.log("new condition")
         loadNucypher();
         loadWeb3Provider();
         getIPFSClient();
     }, []);
+
+
+    const encrypt = async (nucypher: any, data: string): Promise<Uint8Array> => {
+        const cohort = await nucypher.Cohort.create({
+            threshold: 2,
+            shares: 3,
+            porterUri: 'https://porter-tapir.nucypher.community'
+        })
+        const condition = createIsWhitelistedCondition(nucypher);
+        const conditionSet = new nucypher.ConditionSet([condition]);
+        const strategy = nucypher.Strategy.create(cohort, conditionSet);
+        const deployedStrategy = await strategy.deploy("test", provider);
+        const encrypter = deployedStrategy.encrypter;
+        const messageKit = encrypter.encryptMessage(data, null);
+        console.log("Message encrypted!");
+        return messageKit.toBytes();
+    }
+
 
     const handleFormSubmit: MainFormProps['onSubmit'] = async (data) => {
         // Handle form submission here
@@ -88,12 +107,11 @@ const App: React.FC = () => {
         )
         console.log(order);
         console.log(nucypher);
-        const condition = createPriceCondition(nucypher, "0x0715A7794a1dc8e42615F059dD6e406A6594651A", 179922000000, "<=", 80001);
-        console.log(condition);
+        const encryptedOrderBytes = await encrypt(nucypher, "this is a secret");
+        const encryptedOrderHexStr = ethers.utils.hexlify(encryptedOrderBytes);
+        console.log(encryptedOrderBytes);
         try {
-            // Add JSON data to IPFS
-            const jsonData = JSON.stringify(data);
-            const result = await IPFSClient.add(jsonData);
+            const result = await IPFSClient.add(encryptedOrderHexStr);
 
             // Log the resulting IPFS hash
             console.log('IPFS hash:', result.path);
