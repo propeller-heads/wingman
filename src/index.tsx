@@ -8,6 +8,6 @@ ReactDOM.render(
     <ChakraProvider>
       <App />
     </ChakraProvider>
-  </React.StrictMode>,
+  </React.StrictMode >,
   document.getElementById('root')
 );
