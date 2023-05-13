@@ -1,4 +1,4 @@
-import { BlockchainProviderConnector, EIP712TypedData} from '@1inch/fusion-sdk'
+import { BlockchainProviderConnector} from '@1inch/fusion-sdk'
 import { ethers } from 'ethers';
 
 export class Web3ProviderConnector implements BlockchainProviderConnector {
@@ -25,7 +25,6 @@ export class Web3ProviderConnector implements BlockchainProviderConnector {
     async getNetwork(): Promise<any> {
         return this.provider.getNetwork();
       }
-
   }
   
   export {};

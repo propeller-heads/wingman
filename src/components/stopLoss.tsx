@@ -1,13 +1,15 @@
 import { Box, Button, Flex, FormControl, FormLabel, Input, Select } from '@chakra-ui/react';
 import React from 'react';
 import theme from '../theme';
+import { getFusionQuote } from '../fusion/fusion_quote';
+import { getTokenDecimals } from '../web3';
 
 interface MainFormProps {
     onSubmit: (data: any) => void;
-    isConnected: boolean;
+    provider: any;
 }
 
-const MainForm: React.FC<MainFormProps> = ({ onSubmit, isConnected }) => {
+const MainForm: React.FC<MainFormProps> = ({ onSubmit, provider }) => {
     const [sellToken, setSellToken] = React.useState('');
     const [buyToken, setBuyToken] = React.useState('');
     const [sellAmount, setLimit] = React.useState('');
@@ -17,17 +19,38 @@ const MainForm: React.FC<MainFormProps> = ({ onSubmit, isConnected }) => {
 
     // Check if all form fields are filled
     const checkFormValidity = () => {
-        if (sellToken && buyToken && sellAmount && buyAmount && isConnected) {
+        if (sellToken && buyToken && sellAmount && provider) {
             setIsFormValid(true);
         } else {
             setIsFormValid(false);
         }
     };
 
+    const getQuote = async () => {
+        if (sellToken && buyToken && sellAmount && provider){
+            try{
+                const sellAmountDecimals: number = +sellAmount *10 ** await getTokenDecimals(sellToken)
+                const quote = await getFusionQuote(
+                    sellToken,
+                    buyToken,
+                    sellAmountDecimals.toString(),
+                    provider,
+                )
+                const buyAmount: number =quote.toTokenAmount / 10 ** await getTokenDecimals(buyToken)
+                setBuyAmount(buyAmount.toString());
+            }
+            catch (error) {
+                console.log('Caught an error:', error);
+            }
+        } else {
+        }
+    };
+
     // Call checkFormValidity whenever any form field changes
     React.useEffect(() => {
         checkFormValidity();
-    }, [sellToken, buyToken, sellAmount, buyAmount]);
+        getQuote();
+    }, [sellToken, buyToken, sellAmount]);
 
 
     const handleSubmit = () => {
