@@ -1,4 +1,4 @@
-import { buildFusionOrder } from './fusion_order'; // Replace 'your-file' with the correct path to your file
+import { buildFusionOrder } from './fusion_order';
 
 describe('buildFusionOrder', () => {
   it('should return a valid LimitOrderV3Struct object', () => {
