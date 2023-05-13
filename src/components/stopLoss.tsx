@@ -45,6 +45,8 @@ const MainForm: React.FC<MainFormProps> = ({ onSubmit, isConnected }) => {
             <FormControl id="sellToken" mb={4}>
                 <FormLabel>Sell Token</FormLabel>
                 <Select bg="rgba(255, 255, 255, 0.85)"
+                    textColor={sellToken ? 'black' : 'gray.4    00'}
+                    focusBorderColor='rgba(106,39,115, 255)'
                     placeholder="Select sell token"
                     value={sellToken}
                     onChange={(e) => setSellToken(e.target.value)}
@@ -59,6 +61,8 @@ const MainForm: React.FC<MainFormProps> = ({ onSubmit, isConnected }) => {
             <FormControl id="buyToken" mb={4}>
                 <FormLabel>Buy Token</FormLabel>
                 <Select bg="rgba(255, 255, 255, 0.85)"
+                    textColor={buyToken ? 'black' : 'gray.400'}
+                    focusBorderColor='rgba(106,39,115, 255)'
                     placeholder="Select buy token"
                     value={buyToken}
                     onChange={(e) => setBuyToken(e.target.value)}
@@ -74,6 +78,7 @@ const MainForm: React.FC<MainFormProps> = ({ onSubmit, isConnected }) => {
                 <FormLabel>Stop at</FormLabel>
                 <Input bg="rgba(255, 255, 255, 0.85)"
                     type="number"
+                    focusBorderColor='rgba(106,39,115, 255)'
                     value={stopAt}
                     onChange={(e) => setStopAt(e.target.value)}
                     placeholder="Enter stop at value"
@@ -84,6 +89,7 @@ const MainForm: React.FC<MainFormProps> = ({ onSubmit, isConnected }) => {
                 <FormLabel>Limit</FormLabel>
                 <Input bg="rgba(255, 255, 255, 0.85)"
                     type="number"
+                    focusBorderColor='rgba(106,39,115, 255)'
                     value={limit}
                     onChange={(e) => setLimit(e.target.value)}
                     placeholder="Enter limit value"
@@ -94,6 +100,7 @@ const MainForm: React.FC<MainFormProps> = ({ onSubmit, isConnected }) => {
                 <FormLabel>Amount</FormLabel>
                 <Input bg="rgba(255, 255, 255, 0.85)"
                     type="number"
+                    focusBorderColor='rgba(106,39,115, 255)'
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="Enter amount"
@@ -101,7 +108,12 @@ const MainForm: React.FC<MainFormProps> = ({ onSubmit, isConnected }) => {
             </FormControl>
 
             <Flex justifyContent="flex-end">
-                <Button colorScheme="purple" color={"white"} backgroundColor={isFormValid ? 'rgba(106,39,115, 255)' : 'gray'} onClick={handleSubmit} disabled={!isFormValid}>
+                <Button
+                    colorScheme="purple"
+                    color={"white"}
+                    backgroundColor={isFormValid ? 'rgba(106,39,115, 255)' : 'gray'}
+                    onClick={handleSubmit}
+                    disabled={!isFormValid}>
                     {isFormValid ? 'Create Stop-loss' : 'Please connect your wallet and fill the form'}
                 </Button>
             </Flex>
