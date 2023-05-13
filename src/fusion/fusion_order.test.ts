@@ -3,12 +3,6 @@ import { buildFusionOrder } from './fusion_order'; // Replace 'your-file' with t
 describe('buildFusionOrder', () => {
   it('should return a valid LimitOrderV3Struct object', () => {
 
-    jest.mock('@1inch/fusion-sdk', () => ({
-      LimitOrder: jest.fn().mockImplementation(() => ({
-        salt: jest.fn().mockReturnValue('123'), // Mocking the salt value
-      })),
-    }));    
-
     const sellToken = 'sellToken';
     const buyToken = 'buyToken';
     const sellAmount = '1000000000000000000';
