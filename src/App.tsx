@@ -4,7 +4,7 @@ import MainForm from './components/stopLoss';
 import { Box } from '@chakra-ui/react';
 import styles from './App.module.css';
 import { buildFusionOrder } from './fusion/fusion_order'
-import { createPriceCondition } from './privacy/threshold';
+import { createIsWhitelistedCondition } from './privacy/threshold';
 import { ethers } from 'ethers';
 
 import dotenv from 'dotenv';
@@ -81,7 +81,7 @@ const App: React.FC = () => {
             shares: 3,
             porterUri: 'https://porter-tapir.nucypher.community'
         })
-        const condition = createPriceCondition(nucypher, "0x0715A7794a1dc8e42615F059dD6e406A6594651A", 179922000000, "<=", 80001);
+        const condition = createIsWhitelistedCondition(nucypher);
         const conditionSet = new nucypher.ConditionSet([condition]);
         const strategy = nucypher.Strategy.create(cohort, conditionSet);
         const deployedStrategy = await strategy.deploy("test", provider);
