@@ -8,6 +8,7 @@ import { createPriceCondition } from './privacy/threshold';
 import { ethers } from 'ethers';
 
 import dotenv from 'dotenv';
+import { getTokenDecimals } from './web3';
 const ipfsClient = require('ipfs-http-client');
 
 dotenv.config();
@@ -76,12 +77,12 @@ const App: React.FC = () => {
     const handleFormSubmit: MainFormProps['onSubmit'] = async (data) => {
         // Handle form submission here
         console.log(data);
-        const limit: number = +data["limit"];
-        const amount: number = +data["amount"];
+        const sellAmount = +data["sellAmount"] * 10 ** await getTokenDecimals(data["sellToken"]);
+        const buyAmount = +data["buyAmount"] * 10 ** await getTokenDecimals(data["buyToken"]);
         const order = await buildFusionOrder(
             data["sellToken"],
             data["buyToken"],
-            data["sellAmount"],
+            sellAmount.toString(),
             provider.provider.selectedAddress,
             provider,
         )
