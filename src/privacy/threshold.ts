@@ -35,7 +35,7 @@ export function createIsWhitelistedCondition(
             ]
         },
         chain: chainId,
-        retrurnValueTest: {
+        returnValueTest: {
             comparator: "=",
             value: true
         }

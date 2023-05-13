@@ -76,7 +76,7 @@ const App: React.FC = () => {
     }, []);
 
 
-    const encrypt = async (nucypher: any, data: string, provider: any): Promise<Uint8Array> => {
+    const encrypt = async (nucypher: any, data: string, provider: any): Promise<string> => {
         const cohort = await nucypher.Cohort.create({
             threshold: 2,
             shares: 3,
@@ -88,9 +88,11 @@ const App: React.FC = () => {
         const deployedStrategy = await strategy.deploy("test", provider);
         const encrypter = deployedStrategy.encrypter;
         const messageKit = encrypter.encryptMessage(data, null);
-        console.log("Message encrypted!");
+        const encryptedOrderHexStr = ethers.utils.hexlify(messageKit.toBytes());
+        console.log("Message encrypted: ", encryptedOrderHexStr);
 
         console.log("Showcasing decryption")
+        console.log(provider);
         const conditionContext = conditionSet.buildContext(provider);
         const decrypter = deployedStrategy.decrypter;
         try {
@@ -99,12 +101,12 @@ const App: React.FC = () => {
                 conditionContext
             );
             console.log("Decryption successful!!")
-            console.log(decryptedMessage);
+            console.log(JSON.parse(decryptedMessage));
         } catch (error) {
             console.log("failed to decrypt: ", error);
         }
 
-        return messageKit.toBytes();
+        return encryptedOrderHexStr;
     }
 
 
@@ -120,11 +122,7 @@ const App: React.FC = () => {
             provider.provider.selectedAddress,
             provider,
         )
-        console.log(order);
-        console.log(nucypher);
-        const encryptedOrderBytes = await encrypt(nucypher, "this is a secret", provider);
-        const encryptedOrderHexStr = ethers.utils.hexlify(encryptedOrderBytes);
-        console.log(encryptedOrderHexStr);
+        const encryptedOrderHexStr = await encrypt(nucypher, JSON.stringify(order), provider);
         try {
             const result = await IPFSClient.add(encryptedOrderHexStr);
 
