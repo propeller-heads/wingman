@@ -76,7 +76,7 @@ const App: React.FC = () => {
     }, []);
 
 
-    const encrypt = async (nucypher: any, data: string): Promise<Uint8Array> => {
+    const encrypt = async (nucypher: any, data: string, provider: any): Promise<string> => {
         const cohort = await nucypher.Cohort.create({
             threshold: 2,
             shares: 3,
@@ -88,8 +88,25 @@ const App: React.FC = () => {
         const deployedStrategy = await strategy.deploy("test", provider);
         const encrypter = deployedStrategy.encrypter;
         const messageKit = encrypter.encryptMessage(data, null);
-        console.log("Message encrypted!");
-        return messageKit.toBytes();
+        const encryptedOrderHexStr = ethers.utils.hexlify(messageKit.toBytes());
+        console.log("Message encrypted: ", encryptedOrderHexStr);
+
+        console.log("Showcasing decryption")
+        console.log(provider);
+        const conditionContext = conditionSet.buildContext(provider);
+        const decrypter = deployedStrategy.decrypter;
+        try {
+            const decryptedMessage = await decrypter.retrieveAndDecrypt(
+                [messageKit],
+                conditionContext
+            );
+            console.log("Decryption successful!!")
+            console.log(JSON.parse(decryptedMessage));
+        } catch (error) {
+            console.log("failed to decrypt: ", error);
+        }
+
+        return encryptedOrderHexStr;
     }
 
 
@@ -105,11 +122,7 @@ const App: React.FC = () => {
             provider.provider.selectedAddress,
             provider,
         )
-        console.log(order);
-        console.log(nucypher);
-        const encryptedOrderBytes = await encrypt(nucypher, "this is a secret");
-        const encryptedOrderHexStr = ethers.utils.hexlify(encryptedOrderBytes);
-        console.log(encryptedOrderBytes);
+        const encryptedOrderHexStr = await encrypt(nucypher, JSON.stringify(order), provider);
         try {
             const result = await IPFSClient.add(encryptedOrderHexStr);
 
