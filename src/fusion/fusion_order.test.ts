@@ -20,7 +20,7 @@ describe('buildFusionOrder', () => {
     expect(result.takingAmount).toEqual(minBuyAmount);
 
     const salt = AuctionSalt.decode(result.salt)
-    expect(salt.duration).toEqual(604800)
+    expect(salt.duration).toEqual(604800*4)
 
   });
 });

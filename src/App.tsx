@@ -35,9 +35,8 @@ const App: React.FC = () => {
             data["sellToken"],
             data["buyToken"],
             data["amount"],
-            "0",
+            (num1*num2).toString(),
             "fake_wallet",
-            "PK",
         )
         console.log(order);
     };

@@ -6,17 +6,16 @@ export function buildFusionOrder(
     buyToken: string,
     sellAmount: string,
     minBuyAmount: string,
-    wallet: string,
-    privateKey: string
-): any {
+    wallet: string
+): LimitOrderV3Struct {
 
     const salt = new AuctionSalt({
-        duration: 604800, // one week
+        duration: 604800*4, // one month
         auctionStartTime: Math.floor(Date.now() / 1000),
         initialRateBump: 50000,
         bankFee: '0'
     })
-    /*
+
     const suffix = new AuctionSuffix({
         points: [
             {
