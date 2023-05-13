@@ -7,13 +7,16 @@ import { buildFusionOrder } from './fusion/fusion_order'
 import { createPriceCondition } from './privacy/threshold';
 import { ethers } from 'ethers';
 
+import dotenv from 'dotenv';
+const ipfsClient = require('ipfs-http-client');
+
+dotenv.config();
 
 interface MainFormProps {
     onSubmit: (data: any) => void;
 }
 
-type NucypherType = {
-};
+type NucypherType = {};
 
 declare global {
     interface Window {
@@ -26,6 +29,22 @@ const App: React.FC = () => {
 
     const [nucypher, setNucypher] = React.useState<NucypherType | undefined>(undefined);
     const [provider, setProvider] = React.useState<any | undefined>(undefined);
+    const [IPFSClient, setIPFSClient] = React.useState<any | undefined>(undefined);
+
+    const getIPFSClient = () => {
+        const INFURA_PROJECT_ID = process.env.REACT_APP_INFURA_PROJECT_ID;
+        const INFURA_SECRET = process.env.REACT_APP_INFURA_SECRET;
+
+        const client = ipfsClient.create({
+            host: 'ipfs.infura.io',
+            port: 5001,
+            protocol: 'https',
+            headers: {
+                authorization: `Basic ${Buffer.from(`${INFURA_PROJECT_ID}:${INFURA_SECRET}`).toString('base64')}`,
+            },
+        });
+        setIPFSClient(client);
+    }
 
     const loadNucypher = async () => {
         const nucypherModule = await import('@nucypher/nucypher-ts');
@@ -52,10 +71,11 @@ const App: React.FC = () => {
         console.log("new condition")
         loadNucypher();
         loadWeb3Provider();
+        getIPFSClient();
     }, []);
 
 
-    const encrypt = async (nucypher: any, data: string) => {
+    const encrypt = async (nucypher: any, data: string): Promise<Uint8Array> => {
         const cohort = await nucypher.Cohort.create({
             threshold: 2,
             shares: 3,
@@ -67,32 +87,41 @@ const App: React.FC = () => {
         const deployedStrategy = await strategy.deploy("test", provider);
         const encrypter = deployedStrategy.encrypter;
         const messageKit = encrypter.encryptMessage(data, null);
-        console.log("Encrypted Message:")
-        console.log(messageKit.toBytes());
+        console.log("Message encrypted!");
+        return messageKit.toBytes();
     }
 
-    const handleFormSubmit: MainFormProps['onSubmit'] = (data) => {
+
+    const handleFormSubmit: MainFormProps['onSubmit'] = async (data) => {
         // Handle form submission here
         console.log(data);
-        const limit: number = +data["limit"];
-        const amount: number = +data["amount"];
         const order = buildFusionOrder(
             data["sellToken"],
             data["buyToken"],
-            data["amount"],
-            (limit * amount).toString(),
-            "fake_wallet",
+            data["sellAmount"],
+            data["buyAmount"],
+            provider.provider.SelectedAddress,
         )
         console.log(order);
         console.log(nucypher);
-        encrypt(nucypher, "this is a secret");
+        const encryptedOrderBytes = await encrypt(nucypher, "this is a secret");
+        const encryptedOrderHexStr = ethers.utils.hexlify(encryptedOrderBytes);
+        console.log(encryptedOrderBytes);
+        try {
+            const result = await IPFSClient.add(encryptedOrderHexStr);
+
+            // Log the resulting IPFS hash
+            console.log('IPFS hash:', result.path);
+        } catch (error) {
+            console.error('Error uploading data to IPFS:', error);
+        }
     };
 
     return (
         nucypher ? (
             <div className={`App ${styles.backgroundImage}`}>
                 <Box minHeight="100vh" display="flex" alignItems="center" justifyContent="center">
-                    {/* <h1 className={styles.appName}>wingman</h1> */}
+                    <h1 style={{ position: 'absolute', top: '15px', left: '30px', fontSize: '36px', fontWeight: 'bold' }} className={styles.appName}>wingman</h1>
                     <MainForm onSubmit={handleFormSubmit} isConnected={provider} />
                 </Box>
             </div>
