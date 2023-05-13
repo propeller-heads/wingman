@@ -81,12 +81,12 @@ const App: React.FC = () => {
         const buyAmount = +data["buyAmount"] * 10 ** await getTokenDecimals(data["buyToken"]);
         console.log(sellAmount);
         console.log(buyAmount);
-        const order = buildFusionOrder(
+        const order = await buildFusionOrder(
             data["sellToken"],
             data["buyToken"],
             sellAmount.toString(),
-            buyAmount.toString(),
-            provider.provider.SelectedAddress,
+            provider.provider.selectedAddress,
+            provider,
         )
         console.log(order);
         console.log(nucypher);
