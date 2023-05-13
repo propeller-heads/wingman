@@ -14,3 +14,18 @@
     color: rgb(255, 234, 0);
     text-transform: lowercase;
 }
+
+.button {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    /* Adjust according to your preference */
+    font-size: 24px;
+    /* Adjust according to your preference */
+    color: rgb(255, 234, 0);
+    text-transform: lowercase;
+    background-color: rgb(255, 234, 0);
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
