@@ -8,7 +8,23 @@ interface MainFormProps {
     onSubmit: (data: any) => void;
 }
 
+type NucypherType = {
+};
+
 const App: React.FC = () => {
+
+    const [nucypher, setNucypher] = React.useState<NucypherType | undefined>(undefined);
+
+    const loadNucypher = async () => {
+        const nucypherModule = await import('@nucypher/nucypher-ts');
+        setNucypher(nucypherModule);
+        console.log("nucypher loaded");
+    };
+
+    React.useEffect(() => {
+        loadNucypher();
+    }, []);
+
     const handleFormSubmit: MainFormProps['onSubmit'] = (data) => {
         // Handle form submission here
         console.log(data);
