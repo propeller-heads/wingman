@@ -3,7 +3,7 @@ import './App.css';
 import MainForm from './components/stopLoss';
 import { Box } from '@chakra-ui/react';
 import styles from './App.module.css';
-import {buildFusionOrder} from './fusion/fusion_order'
+import { buildFusionOrder } from './fusion/fusion_order'
 
 interface MainFormProps {
     onSubmit: (data: any) => void;
@@ -32,11 +32,12 @@ const App: React.FC = () => {
         const num1: number = +data["limit"];
         const num2: number = +data["amount"];
         const order = buildFusionOrder(
-            data["sellToken"], 
+            data["sellToken"],
             data["buyToken"],
             data["amount"],
-            (num1 * num2).toString(),
+            "0",
             "fake_wallet",
+            "PK",
         )
         console.log(order);
     };

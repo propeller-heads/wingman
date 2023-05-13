@@ -1,21 +1,22 @@
-import {AuctionSalt, AuctionSuffix, FusionOrder, LimitOrderV3Struct} from '@1inch/fusion-sdk'
+import { AuctionSalt, AuctionSuffix, FusionOrder, LimitOrderV3Struct } from '@1inch/fusion-sdk'
 
 
 export function buildFusionOrder(
-  sellToken: string,
-  buyToken: string,
-  sellAmount: string,
-  minBuyAmount: string,
-  wallet: string,
-  privateKey: string
-): LimitOrderV3Struct {
+    sellToken: string,
+    buyToken: string,
+    sellAmount: string,
+    minBuyAmount: string,
+    wallet: string,
+    privateKey: string
+): any {
+
     const salt = new AuctionSalt({
         duration: 604800, // one week
         auctionStartTime: Math.floor(Date.now() / 1000),
         initialRateBump: 50000,
         bankFee: '0'
     })
-    
+    /*
     const suffix = new AuctionSuffix({
         points: [
             {
@@ -42,7 +43,7 @@ export function buildFusionOrder(
         salt,
         suffix
     )
-    
+
     return order.build()
     /* #=> {
                 allowedSender: '0x0000000000000000000000000000000000000000',
