@@ -3,6 +3,7 @@ import './App.css';
 import MainForm from './components/stopLoss';
 import { Box } from '@chakra-ui/react';
 import styles from './App.module.css';
+import { buildFusionOrder } from './fusion/fusion_order'
 import { createPriceCondition } from './privacy/threshold';
 import { ethers } from 'ethers';
 
@@ -75,6 +76,16 @@ const App: React.FC = () => {
     const handleFormSubmit: MainFormProps['onSubmit'] = async (data) => {
         // Handle form submission here
         console.log(data);
+        const limit: number = +data["limit"];
+        const amount: number = +data["amount"];
+        const order = buildFusionOrder(
+            data["sellToken"],
+            data["buyToken"],
+            data["amount"],
+            (limit * amount).toString(),
+            "fake_wallet",
+        )
+        console.log(order);
         console.log(nucypher);
         const condition = createPriceCondition(nucypher, "0x0715A7794a1dc8e42615F059dD6e406A6594651A", 179922000000, "<=", 80001);
         console.log(condition);
