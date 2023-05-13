@@ -23,7 +23,13 @@ const MainForm: React.FC<MainFormProps> = ({ onSubmit }) => {
     };
 
     return (
-        <Box width="400px" p={4} borderWidth={1} borderRadius={8} boxShadow="lg" borderColor="purple" backgroundColor="rgba(255, 255, 255, 0.85)" // Set the background color to white with 80% opacity
+        <
+            Box
+            width="400px"
+            p={4} borderWidth={1}
+            borderRadius={8} boxShadow="lg"
+            borderColor="purple"
+            backgroundColor="rgba(255, 255, 255, 0.85)"
         >
             <FormControl id="sellToken" mb={4}>
                 <FormLabel>Sell Token</FormLabel>
