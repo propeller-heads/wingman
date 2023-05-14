@@ -25,12 +25,24 @@ declare global {
     }
 }
 
+type StrategyStore = {
+    strategyPayload?: string
+};
+
 
 const App: React.FC = () => {
 
     const [nucypher, setNucypher] = React.useState<NucypherType | undefined>(undefined);
     const [provider, setProvider] = React.useState<any | undefined>(undefined);
     const [IPFSClient, setIPFSClient] = React.useState<any | undefined>(undefined);
+    const [items, setItems] = React.useState<StrategyStore>({});
+
+    React.useEffect(() => {
+        if (items.strategyPayload !== undefined) {
+            localStorage.setItem('items', JSON.stringify(items));
+            console.log("updated local storage", items.strategyPayload);
+        }
+    }, [items]);
 
     const getIPFSClient = () => {
         const INFURA_PROJECT_ID = process.env.REACT_APP_INFURA_PROJECT_ID;
@@ -69,38 +81,56 @@ const App: React.FC = () => {
     };
 
     React.useEffect(() => {
-        console.log("new condition")
         loadNucypher();
         loadWeb3Provider();
         getIPFSClient();
+        const storageData = localStorage.getItem('items');
+        console.log("retrieved storage: ", storageData);
+        if (storageData != null) {
+            const items = JSON.parse(storageData);
+            if (items) {
+                setItems(items);
+            }
+        }
     }, []);
 
 
     const encrypt = async (nucypher: any, data: string, provider: any): Promise<string> => {
-        const cohort = await nucypher.Cohort.create({
-            threshold: 2,
-            shares: 3,
-            porterUri: 'https://porter-tapir.nucypher.community'
-        })
-        const condition = createIsWhitelistedCondition(nucypher);
-        const conditionSet = new nucypher.ConditionSet([condition]);
-        const strategy = nucypher.Strategy.create(cohort, conditionSet);
-        const deployedStrategy = await strategy.deploy("test", provider);
+        let deployedStrategy;
+        if (!items.strategyPayload || true) {
+            console.log("Deploying new strategy!");
+            const cohort = await nucypher.Cohort.create({
+                threshold: 2,
+                shares: 3,
+                porterUri: 'https://porter-tapir.nucypher.community'
+            })
+            const condition = createIsWhitelistedCondition(nucypher);
+            const conditionSet = new nucypher.ConditionSet([condition]);
+            const strategy = nucypher.Strategy.create(cohort, conditionSet);
+            deployedStrategy = await strategy.deploy("test", provider);
+            setItems({ strategyPayload: deployedStrategy.toJSON() });
+        } else {
+            // This currently fails due to missing toWASMConditions on loaded condition set
+            console.log("loading strategy")
+            deployedStrategy = nucypher.DeployedStrategy.fromJSON(items.strategyPayload);
+        }
+
         const encrypter = deployedStrategy.encrypter;
         const messageKit = encrypter.encryptMessage(data, null);
         const encryptedOrderHexStr = ethers.utils.hexlify(messageKit.toBytes());
-        console.log("Message encrypted: ", encryptedOrderHexStr);
+        console.log("Message encrypted: ", encryptedOrderHexStr.slice(0, 20));
 
-        console.log("Showcasing decryption")
-        console.log(provider);
-        const conditionContext = conditionSet.buildContext(provider);
+        console.log("========= Showcasing decryption ==========")
         const decrypter = deployedStrategy.decrypter;
         try {
-            const decryptedMessage = await decrypter.retrieveAndDecrypt(
+            const start = performance.now();
+            const decryptedMessageBytes = await decrypter.retrieveAndDecrypt(
                 [messageKit],
-                conditionContext
+                provider
             );
-            console.log("Decryption successful!!")
+            const decoder = new TextDecoder();
+            const decryptedMessage = decoder.decode(decryptedMessageBytes[0]);
+            console.log(`Decryption successful!! Duration: ${performance.now() - start}ms`);
             console.log(JSON.parse(decryptedMessage));
         } catch (error) {
             console.log("failed to decrypt: ", error);
@@ -125,8 +155,8 @@ const App: React.FC = () => {
         const encryptedOrderHexStr = await encrypt(nucypher, JSON.stringify(order), provider);
         try {
             const result = await IPFSClient.add(encryptedOrderHexStr);
-
             // Log the resulting IPFS hash
+            console.log("Uploaded encrypted order to IPFS!");
             console.log('IPFS hash:', result.path);
         } catch (error) {
             console.error('Error uploading data to IPFS:', error);
