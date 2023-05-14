@@ -32,11 +32,13 @@ export function createIsWhitelistedCondition(
                     name: "",
                     type: "bool"
                 }
-            ]
+            ],
+            stateMutability: 'view',
+            type: 'function',
         },
         chain: chainId,
         returnValueTest: {
-            comparator: "=",
+            comparator: "==",
             value: true
         }
     };
